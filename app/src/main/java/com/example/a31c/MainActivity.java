@@ -67,51 +67,6 @@ public class MainActivity extends AppCompatActivity {
         }),
 };
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-////        setup and set content
-//        super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
-//        setContentView(R.layout.activity_main);
-//
-////      enter user's name
-//        EditText userName = findViewById(R.id.nameEditText);
-//
-////      Start quiz button component
-//        Button startQuizButton = findViewById(R.id.startQuizButton);
-//
-//        // Get the current player name from QuizManager
-//        String existingPlayerName = QuizManager.getPlayerName();
-//
-//// Check if a player name already exists
-//        if (!existingPlayerName.isEmpty()) {
-//            // If a player name exists, set the text of userName EditText to this value
-//            userName.setText(existingPlayerName);
-//        } else {
-//            // If no player name exists, take the value the user enters into the EditText component
-//            startQuizButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    String userNameString = userName.getText().toString();
-//
-//                    // Check if the user entered their name
-//                    if (userNameString.isBlank()) {
-//                        userName.setError("Please enter your name");
-//                        return;
-//                    }
-//
-//                    // Initialise quiz state manager
-//                    QuizManager.init(userNameString, avaialableQuestions);
-//
-//                    // Create intent for quiz view, start quiz, go to quiz view
-//                    Intent quizViewIntent = new Intent(MainActivity.this, QuizQuestionsView.class);
-//                    QuizManager.startQuiz();
-//                    startActivity(quizViewIntent);
-//                }
-//            });
-//        }
-//    }
-
     @Override
     protected void onResume() {
         //        setup and set content

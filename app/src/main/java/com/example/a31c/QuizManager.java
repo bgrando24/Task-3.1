@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.Console;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 
@@ -22,8 +23,9 @@ import java.util.Random;
 public class QuizManager {
     private static final String DEBUG_TAG = "QuizManager";  // for debug logs
     private static QuizManager instance = null;
-    private static String playerName;
+    private static String playerName = "";
     private static boolean isQuizRunning;
+    private static boolean quizShouldEnd;
     private static Question[] allQuestions;
     private static int currentQuestionIndex;
     private static int answeredQuestions;
@@ -40,8 +42,6 @@ public class QuizManager {
         // Log initial state
         Log.d(DEBUG_TAG, "QuizManager initialized");
         Log.d(DEBUG_TAG, "Player Name: " + playerName);
-        Log.d(DEBUG_TAG, "Is Quiz Running: " + isQuizRunning);
-        Log.d(DEBUG_TAG, "Number of Questions: " + allQuestions.length);
     }
 
     // Gives access to the com.example.a31c.QuizManager instance
@@ -55,21 +55,20 @@ public class QuizManager {
     public static String getPlayerName() {
         return QuizManager.playerName;
     }
-    public static boolean isQuizRunning() {
+    public static boolean getIsQuizRunning() {
         return QuizManager.isQuizRunning;
     }
-    public static Question getCurrentQuestion() {
-        return QuizManager.selectedQuestions.get(currentQuestionIndex);
-    }
+    public static boolean getQuizShouldEnd() { return QuizManager.quizShouldEnd; }
+    public static Question getCurrentQuestion() { return QuizManager.selectedQuestions.get(currentQuestionIndex); }
+    public static int getCurrentQuestionIndex() { return QuizManager.currentQuestionIndex; }
+    public static int getNumberOfQuizQuestions() { return QuizManager.numberOfQuizQuestions; }
     public static int getAnsweredQuestions() {
         return QuizManager.answeredQuestions;
     }
     public static int getPlayerScore() {
         return QuizManager.playerScore;
     }
-    public static ArrayList<Question> getSelectedQuestions() {
-        return QuizManager.selectedQuestions;
-    }
+    public static ArrayList<Question> getSelectedQuestions() { return QuizManager.selectedQuestions; }
 
 
 //    Methods
@@ -86,19 +85,25 @@ public class QuizManager {
             throw new IllegalStateException("Quiz is already running");
         }
         isQuizRunning = true;
-        numberOfQuizQuestions = new Random().nextInt(8 - 4 + 1) + 4;    // (max questions - min questions + 1) + min questions
+        quizShouldEnd = false;
+        numberOfQuizQuestions = new Random().nextInt(5) + 4; // a random number between 4 and 8 inclusive
+//        numberOfQuizQuestions = 3;    // used in testing
         selectedQuestions = selectQuestions(allQuestions);
         currentQuestionIndex = 0;
         answeredQuestions = 0;
         playerScore = 0;
+        Log.d(DEBUG_TAG, "Is Quiz Running: " + isQuizRunning);
+        Log.d(DEBUG_TAG, "Number of Questions: " + numberOfQuizQuestions);
     }
 
 //    Update the quiz state and move to the next question
     static public void nextQuestion() {
+        Log.d(DEBUG_TAG, "nextQuestion()");
         if (!isQuizRunning) {
             throw new IllegalStateException("Quiz is not running");
         }
         if (currentQuestionIndex == selectedQuestions.size() - 1) {
+            Log.d(DEBUG_TAG, "Quiz should end, calling endQuiz()");
             endQuiz();
             return;
         }
@@ -110,36 +115,38 @@ public class QuizManager {
         if (!isQuizRunning) {
             throw new IllegalStateException("Quiz is not running");
         }
+        Log.d(DEBUG_TAG, "endQuiz()");
         isQuizRunning = false;
+        quizShouldEnd = true;
     }
 
 //    Randomly select the questions to use in the current quiz instance from allQuestions
-    static private ArrayList<Question> selectQuestions(Question[] allQuestions) {
-        ArrayList<Question> selectedQuestions = new ArrayList<>();
-        for (int i = 0; i < numberOfQuizQuestions; i++) {
-            int randomIndex = (int) (Math.random() * allQuestions.length);
+//    HashSet used to help ensure no duplicate questions are selected
+static private ArrayList<Question> selectQuestions(Question[] allQuestions) {
+    ArrayList<Question> selectedQuestions = new ArrayList<>();
+    HashSet<Integer> selectedIndices = new HashSet<>();
+
+    while (selectedQuestions.size() < numberOfQuizQuestions) {
+        int randomIndex = (int) (Math.random() * allQuestions.length);
+
+        // If this index has not been selected before, add the question to selectedQuestions
+        if (!selectedIndices.contains(randomIndex)) {
             selectedQuestions.add(allQuestions[randomIndex]);
+            selectedIndices.add(randomIndex);
         }
-        return selectedQuestions;
     }
+
+    return selectedQuestions;
+}
 
 //    Check if the answer is correct, update score and progress
-    static public boolean answerQuestion(int answerIndex) {
-        if (!isQuizRunning) {
-            throw new IllegalStateException("Quiz is not running");
-        }
-        if (answerIndex < 0 || answerIndex > 2) {
-            throw new IllegalArgumentException("Invalid answer index");
-        }
-        Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
-        Answer[] shuffledAnswers = currentQuestion.getShuffledAnswers();
-        if (shuffledAnswers[answerIndex].isCorrect) {
-            playerScore++;
-            return true;
-        }
-        answeredQuestions++;
-        return false;
+    static public boolean answerQuestion(Answer selectedAnswer) {
+        Log.d(DEBUG_TAG, "answerQuestion()");
+       if (selectedAnswer.isCorrect) {
+           playerScore++;
+           return true;
+       } else {
+           return false;
+       }
     }
-
-
 }

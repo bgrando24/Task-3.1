@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
                 new Answer(" int[] arr = new int(5);", false),
         }),
         new Question("Which of the following statements is true about Java?", new Answer[] {
-                new Answer("Interfaces can have constructors", true),
-                new Answer("A class can implement multiple interfaces", false),
+                new Answer("A class can implement multiple interfaces", true),
+                new Answer("Interfaces can have constructors", false),
                 new Answer("Interfaces can contain instance variables", false),
         }),
         new Question("What does the 'break' statement do in Java?", new Answer[] {
@@ -63,34 +63,82 @@ public class MainActivity extends AppCompatActivity {
         new Question("What is a purpose of the Intent class in Android?", new Answer[] {
                 new Answer("To pass data between components (such as activities)", true),
                 new Answer("To send the app's intentions out to the universe", false),
-                new Answer("To provide an abstraction layer over the built-in SQLite relational database management system", false),
+                new Answer("To provide an abstraction layer over the built-in SQLite RDMS", false),
         }),
 };
 
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+////        setup and set content
+//        super.onCreate(savedInstanceState);
+//        EdgeToEdge.enable(this);
+//        setContentView(R.layout.activity_main);
+//
+////      enter user's name
+//        EditText userName = findViewById(R.id.nameEditText);
+//
+////      Start quiz button component
+//        Button startQuizButton = findViewById(R.id.startQuizButton);
+//
+//        // Get the current player name from QuizManager
+//        String existingPlayerName = QuizManager.getPlayerName();
+//
+//// Check if a player name already exists
+//        if (!existingPlayerName.isEmpty()) {
+//            // If a player name exists, set the text of userName EditText to this value
+//            userName.setText(existingPlayerName);
+//        } else {
+//            // If no player name exists, take the value the user enters into the EditText component
+//            startQuizButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    String userNameString = userName.getText().toString();
+//
+//                    // Check if the user entered their name
+//                    if (userNameString.isBlank()) {
+//                        userName.setError("Please enter your name");
+//                        return;
+//                    }
+//
+//                    // Initialise quiz state manager
+//                    QuizManager.init(userNameString, avaialableQuestions);
+//
+//                    // Create intent for quiz view, start quiz, go to quiz view
+//                    Intent quizViewIntent = new Intent(MainActivity.this, QuizQuestionsView.class);
+//                    QuizManager.startQuiz();
+//                    startActivity(quizViewIntent);
+//                }
+//            });
+//        }
+//    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-//        setup and set content
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+        //        setup and set content
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        super.onResume();
 
-//      enter user's name
         EditText userName = findViewById(R.id.nameEditText);
-
-//      Start the quiz
         Button startQuizButton = findViewById(R.id.startQuizButton);
+
+        String existingPlayerName = QuizManager.getPlayerName();
+
+        if (!existingPlayerName.isEmpty()) {
+            userName.setText(existingPlayerName);
+        }
+
         startQuizButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                check user entered their name
-                if (userName.getText().toString().isEmpty()) {
+                String userNameString = userName.getText().toString();
+
+                if (userNameString.isEmpty()) {
                     userName.setError("Please enter your name");
                     return;
                 }
-//                initialise quiz state manager
-                QuizManager.init(userName.getText().toString(), avaialableQuestions);
 
-//                create intent for quiz view, start quiz, go to quiz view
+                QuizManager.init(userNameString, avaialableQuestions);
                 Intent quizViewIntent = new Intent(MainActivity.this, QuizQuestionsView.class);
                 QuizManager.startQuiz();
                 startActivity(quizViewIntent);

@@ -1,6 +1,6 @@
 package com.example.a31c;/*
-* The com.example.a31c.Question class represents a question that may be asked in the quiz
-* Each com.example.a31c.Question object has a description and an array of com.example.a31c.Answer objects (representing the possible answers)
+* Question class represents a question that may be asked in the quiz
+* Each Question object has a description and an array of Answer objects (representing the possible answers)
 * */
 
 import java.util.Random;
@@ -18,7 +18,6 @@ public class Question {
     public String getDescription() {
         return description;
     }
-
     public Answer[] getAnswers() {
         return answers;
     }

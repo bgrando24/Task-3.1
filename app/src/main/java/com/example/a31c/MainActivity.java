@@ -1,7 +1,6 @@
 package com.example.a31c;
 
 import android.content.Intent;
-import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +13,7 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity {
 
 //    all possible questions
-    private Question[] avaialableQuestions = {
+    private final Question[] availableQuestions = {
             new Question("What keyword is used to declare a constant variable in Java?", new Answer[] {
                     new Answer("final", true),
                     new Answer("const", false),
@@ -69,11 +68,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //        setup and set content
+        //        view setup and content
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         super.onResume();
 
+//        component references
         EditText userName = findViewById(R.id.nameEditText);
         Button startQuizButton = findViewById(R.id.startQuizButton);
 
@@ -83,21 +83,19 @@ public class MainActivity extends AppCompatActivity {
             userName.setText(existingPlayerName);
         }
 
-        startQuizButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userNameString = userName.getText().toString();
+//        start the quiz when clicked
+        startQuizButton.setOnClickListener(v -> {
+            String userNameString = userName.getText().toString();
 
-                if (userNameString.isEmpty()) {
-                    userName.setError("Please enter your name");
-                    return;
-                }
-
-                QuizManager.init(userNameString, avaialableQuestions);
-                Intent quizViewIntent = new Intent(MainActivity.this, QuizQuestionsView.class);
-                QuizManager.startQuiz();
-                startActivity(quizViewIntent);
+            if (userNameString.isEmpty()) {
+                userName.setError("Please enter your name");
+                return;
             }
+
+            QuizManager.init(userNameString, availableQuestions);
+            Intent quizViewIntent = new Intent(MainActivity.this, QuizQuestionsView.class);
+            QuizManager.startQuiz();
+            startActivity(quizViewIntent);
         });
     }
 }

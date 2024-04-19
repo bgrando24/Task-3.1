@@ -16,9 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.animation.ObjectAnimator;
 import android.widget.ProgressBar;
 
-import org.w3c.dom.Text;
-
-import java.util.Arrays;
 
 public class QuizQuestionsView extends AppCompatActivity {
     private final int NEXT_QUESTION_DELAY = 3000;
